@@ -7,6 +7,9 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Permission;
 use App\Models\UserStatus;
+use Illuminate\Auth\Events\Validated;
+use Illuminate\Support\Facades\Validator as FacadesValidator;
+use Illuminate\Validation\Validator;
 
 class UserController extends Controller
 {
@@ -26,7 +29,11 @@ class UserController extends Controller
             )
             ->get();
 
-        return  response()->json($users);
+        return  response()->json([
+            "status" => 200,
+            "message" => "Success",
+            "data" => $users
+        ]);
     }
 
     /**
@@ -56,10 +63,25 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $user = new User;
+        $input = $request->all();
+        $validations  = FacadesValidator::make($input, [
+            "status_id" => "required",
+            "username" => "required|unique:users,username,",
+            "name" => "required|max:255",
+            "email" => "required|email",
+            "permission_id" => "required",
+        ]);
 
+        if ($validations->fails()) {
 
-        $user->create([
+            return response()->json([
+                "message" => "Error",
+                "status" => 422,
+                "data" => $validations->errors()
+            ]);
+        }
+        
+        $user = User::create([
 
             "username" => $request["username"],
             "name" => $request["name"],
@@ -71,8 +93,9 @@ class UserController extends Controller
 
 
         return response()->json([
-            "message" => "success",
-
+            "status" => 200,
+            "message" => "Success",
+            "data" => $user
         ]);
     }
 
@@ -84,8 +107,12 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        return User::findOrFail($id);
-        //
+        $user =  User::findOrFail($id);
+        return response()->json([
+            "status" => 200,
+            "message" => "Success",
+            "data" => $user
+        ]);
     }
 
     /**
@@ -118,15 +145,21 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         //
-        $validated = $request->validate([
+        $input = $request->all();
+        $validations  = FacadesValidator::make($input, [
             "status_id" => "required",
             "username" => "required|unique:users,username," . $id,
             "name" => "required|max:255",
             "email" => "required|email",
             "permission_id" => "required",
         ]);
-        if($validated) {
-          
+        if ($validations->fails()) {
+
+            return response()->json([
+                "message" => "Error",
+                "status" => 422,
+                "data" => $validations->errors()
+            ]);
         }
         $user = User::find($id)->update([
             "status_id" => $request["status_id"],
@@ -139,7 +172,8 @@ class UserController extends Controller
         ]);
         return response()->json([
             "message" => "Success",
-
+            "status" => 200,
+            "data" => $user
         ]);
     }
 
@@ -154,7 +188,10 @@ class UserController extends Controller
         //
         User::destroy($id);
         return response()->json([
-            "message" => "Delete success"
+            "message" => "Delete success",
+            "status" => 200,
+            "data" => null
+
         ]);
     }
 }
