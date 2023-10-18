@@ -15,7 +15,7 @@ class DepartmentsSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('department')->insert([
+        DB::table('permissions')->insert([
             ['name' => 'Quản trị viên'],
             ['name' => 'Người Dùng'],
             ['name' => 'Cộng Tác Viên',]

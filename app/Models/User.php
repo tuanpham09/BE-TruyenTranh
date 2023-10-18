@@ -25,7 +25,7 @@ class User extends Authenticatable
         'avatar',
         'change_password_at',
         'login_at',
-        'department_id',
+        'permission_id',
         'status_id',
     ];
 

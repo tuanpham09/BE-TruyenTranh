@@ -40,11 +40,11 @@ class UserController extends Controller
         $user = new User();
 
         $user_status = UserStatus::all();
-        $departments = Permission::all();
+        $permissions = Permission::all();
 
         return response()->json([
             'user_status' => $user_status,
-            'departments' => $departments
+            'permissions' => $permissions
         ]);
     }
 
@@ -57,28 +57,18 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $user = new User;
-        dd($request);
-        if ($request["permission_id"] === null && $request["status_id"] === null) {
-            $user->create([
 
-                "username" => $request["username"],
-                "name" => $request["name"],
-                "email" => $request["email"],
-                "password" => Hash::make($request["password"]),
-                "permission_id" => 1,
-                "status_id" => 2,
-            ]);
-        } else {
-            $user->create([
 
-                "username" => $request["username"],
-                "name" => $request["name"],
-                "email" => $request["email"],
-                "password" => Hash::make($request["password"]),
-                "permission_id" => $request["permission_id"],
-                "status_id" => $request["status_id"],
-            ]);
-        }
+        $user->create([
+
+            "username" => $request["username"],
+            "name" => $request["name"],
+            "email" => $request["email"],
+            "password" => Hash::make($request["password"]),
+            "permission_id" => $request["permission_id"],
+            "status_id" => $request["status_id"],
+        ]);
+
 
         return response()->json([
             "message" => "success",
@@ -109,12 +99,12 @@ class UserController extends Controller
         //
         $user = User::findOrFail($id);
         $user_status = UserStatus::find($id);
-        $departments = Permission::find($id);
+        $permissions = Permission::find($id);
 
         return response()->json([
             'user' => $user,
             'user_status' => $user_status,
-            'departments' => $departments
+            'permissions' => $permissions
         ]);
     }
 
@@ -135,6 +125,9 @@ class UserController extends Controller
             "email" => "required|email",
             "permission_id" => "required",
         ]);
+        if($validated) {
+          
+        }
         $user = User::find($id)->update([
             "status_id" => $request["status_id"],
             "username" => $request["username"],

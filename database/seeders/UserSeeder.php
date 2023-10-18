@@ -22,7 +22,7 @@ class UserSeeder extends Seeder
             'email' => 'user1',
             'password' => Hash::make('123'),
             'avatar' => 'user1',
-            'department_id' => 1,
+            'permission_id' => 1,
             'status_id' => 1
         ]);
     }
