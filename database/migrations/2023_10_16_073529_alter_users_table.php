@@ -15,8 +15,8 @@ return new class extends Migration
     {
         //
         schema::table('users', function (Blueprint $table) {
-            $table->foreignId('department_id')->constrained('users');
-            $table->foreignId('status_id')->constrained('users');
+            $table->foreignId('department_id')->constrained('users')->default(1);
+            $table->foreignId('status_id')->constrained('users')->default(2);
         });
     }
 
