@@ -7,9 +7,11 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Permission;
 use App\Models\UserStatus;
-use Illuminate\Auth\Events\Validated;
+
+
 use Illuminate\Support\Facades\Validator as FacadesValidator;
 use Illuminate\Validation\Validator;
+
 
 class UserController extends Controller
 {
@@ -47,11 +49,13 @@ class UserController extends Controller
         $user = new User();
 
         $user_status = UserStatus::all();
+
         $permissions = Permission::all();
 
         return response()->json([
             'user_status' => $user_status,
             'permissions' => $permissions
+
         ]);
     }
 
@@ -63,6 +67,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+
         $input = $request->all();
         $validations  = FacadesValidator::make($input, [
             "status_id" => "required",
@@ -96,7 +101,7 @@ class UserController extends Controller
             "status" => 200,
             "message" => "Success",
             "data" => $user
-        ]);
+
     }
 
     /**
@@ -126,12 +131,15 @@ class UserController extends Controller
         //
         $user = User::findOrFail($id);
         $user_status = UserStatus::find($id);
+
         $permissions = Permission::find($id);
+
 
         return response()->json([
             'user' => $user,
             'user_status' => $user_status,
             'permissions' => $permissions
+
         ]);
     }
 
@@ -145,14 +153,17 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         //
+
         $input = $request->all();
         $validations  = FacadesValidator::make($input, [
+
             "status_id" => "required",
             "username" => "required|unique:users,username," . $id,
             "name" => "required|max:255",
             "email" => "required|email",
             "permission_id" => "required",
         ]);
+
         if ($validations->fails()) {
 
             return response()->json([
@@ -161,6 +172,7 @@ class UserController extends Controller
                 "data" => $validations->errors()
             ]);
         }
+
         $user = User::find($id)->update([
             "status_id" => $request["status_id"],
             "username" => $request["username"],
@@ -174,6 +186,7 @@ class UserController extends Controller
             "message" => "Success",
             "status" => 200,
             "data" => $user
+
         ]);
     }
 
@@ -188,6 +201,7 @@ class UserController extends Controller
         //
         User::destroy($id);
         return response()->json([
+
             "message" => "Delete success",
             "status" => 200,
             "data" => null
